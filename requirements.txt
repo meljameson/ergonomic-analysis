@@ -1,0 +1,5 @@
+depthai>=3.0
+opencv-python<5
+mediapipe>=0.10.14
+numpy<3.0
+matplotlib
