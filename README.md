@@ -1,4 +1,4 @@
-# Wrist Angle
+# Ergonomic Analysis
 
 Measures wrist angle with an OAK-D Lite while someone lifts or carries a solar panel, so different handle designs can be compared.
 
@@ -21,37 +21,17 @@ This is a 2D measurement, so camera placement decides what gets measured:
 | `pose_landmarker_full.task` | Pose model, downloaded automatically on first run |
 | `hand_landmarker.task` | Hand model, downloaded automatically on first run |
 
-## Setup (Windows, one time)
+## Setup
 
 ```bat
-cd C:\Users\melsj\Documents\GitHub\wrist-angle
 python -m venv venv
 venv\Scripts\activate.bat
 pip install -r requirements.txt
 ```
 
-Python 3.14 works. depthai, mediapipe and opencv all have Windows packages for it.
+Depthai, mediapipe, and opencv all have Windows packages for Python 3.14.
 
 If `python -m venv venv` fails with "Unable to copy ... venvlauncher.exe", a venv is already active in that terminal. Run `deactivate` first, or skip creating it and just activate the existing one.
-
-## Each session
-
-```bat
-cd C:\Users\melsj\Documents\GitHub\wrist-angle
-venv\Scripts\activate.bat
-```
-
-### Make sure Windows has the camera, not WSL
-
-The camera was passed through to WSL earlier with usbipd. If it's still attached to WSL, Windows can't see it. In an **admin PowerShell**:
-
-```powershell
-usbipd list            # Movidius MyriadX should NOT say "Attached"
-usbipd detach --busid 2-9
-usbipd unbind --all    # optional: removes all usbipd bindings
-```
-
-The BUSID (`2-9`) is the USB port the camera is plugged into. It changes if you use a different port, so check `usbipd list`.
 
 ### Record trials
 
@@ -80,7 +60,7 @@ Useful options:
 | `--flip-sign` | Invert the angle so extension reads as positive (see below) |
 | `--threshold 15` | Angle in degrees beyond which the display turns red |
 
-**Check the sign the first time.** Bend your wrist back (extension). If the angle goes negative, use `--flip-sign` from then on. The sign depends on which side the camera views from.
+Check the sign the first time. Bend your wrist back (extension). If the angle goes negative, use `--flip-sign` from then on. The sign depends on which side the camera views from.
 
 ### Compare trials
 
@@ -120,10 +100,10 @@ Gaps in the plot are frames where the arm wasn't visible. Those frames are left 
 
 ## Troubleshooting
 
-**Video freezes or stutters.** On startup the console prints the USB speed, and the bottom-left of the window shows the frame rate.
+Video freezes or stutters. On startup the console prints the USB speed, and the bottom-left of the window shows the frame rate.
 - `USB speed: HIGH` means USB2. Use a USB3 port (usually blue) and the cable that came with the camera.
 - If the frame rate is well under 15 fps, pose detection is too slow on this computer. A lighter pose model would help (not set up yet).
 
-**"No available devices" or "X_LINK_DEVICE_NOT_FOUND".** The camera is probably still attached to WSL (see above), or another program has it open.
+"No available devices" or "X_LINK_DEVICE_NOT_FOUND". The camera is probably still attached to WSL (see above), or another program has it open.
 
-**Running from WSL instead of Windows.** This didn't work. The camera reboots every time a script connects, and the usbipd passthrough to WSL is too slow to re-attach it before it gives up. Use Windows.
+Running from WSL instead of Windows. This didn't work. The camera reboots every time a script connects, and the usbipd passthrough to WSL is too slow to re-attach it before it gives up. Use Windows.
